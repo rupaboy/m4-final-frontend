@@ -41,7 +41,7 @@ const NotificationTag = ({
             min-w-0 max-w-[86vw] min-h-[2em] rounded-sm px-2 text-center
           `}
         >
-          <span className="line-clamp-3 text-sm">{notificationTag}</span>
+          <span className="line-clamp-5 text-sm">{notificationTag}</span>
 
           {withProgress && (
             <motion.div

@@ -36,7 +36,8 @@ const SignUpForm = () => {
     defaultValues: {
       username: '',
       email: '',
-      userCountry: ''
+      location: '',
+      password: ''
     }
   });
 
@@ -45,7 +46,9 @@ const SignUpForm = () => {
     const newUser = {
       username: data.username,
       email: data.email,
-      userCountry: data.userCountry
+      location: data.location,
+      password: data.password,
+      role: 'user'
     };
 
     try {
@@ -148,19 +151,42 @@ const SignUpForm = () => {
             placeholder='pauldummy84@mail.com' />
 
           <label
-            htmlFor='userCountry'
+            htmlFor='password'
+            className={`
+            text-sm select-none
+            ${!errors.password ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
+          `}
+          >
+            {!errors.password ? 'Password' : `${errors.password?.message}`}
+          </label>
+
+          <input
+            id='password'
+            type='password'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+            {...register('password', {
+              required: 'Password is required',
+              minLength: { value: 6, message: 'Password must be at least 6 characters' },
+              maxLength: { value: 32, message: 'Password cannot exceed 32 characters' }
+            })}
+            placeholder="yourPassword123"
+          />
+
+
+          <label
+            htmlFor='location'
             className={`
               text-sm select-none
-              ${!errors.userCountry ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
+              ${!errors.location ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
               `}
-          > {!errors.userCountry ? 'Location' : `${errors.userCountry?.message}`} </label>
+          > {!errors.location ? 'Location' : `${errors.location?.message}`} </label>
           <select
-            id='userCountry'
+            id='location'
             className='
              p-1 w-70 rounded
             dark:bg-slate-950 dark:border-slate-800
              bg-slate-300 border border-slate-400'
-            {...register('userCountry', {
+            {...register('location', {
               required: 'Country selection is required'
             })}
             defaultValue=""

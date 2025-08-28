@@ -48,7 +48,7 @@ const CountryHub = () => {
         await runFetch(
           `country-${code}`,
           () => CountryApi.byCode(code),
-          (country) => setCurrentCountry(country)
+          (res) => setCurrentCountry(res.data)
         );
       }
     };

@@ -1,90 +1,76 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router";
-import UserApi from "../api/UserApi";
-import { UseNotification } from "../hook/UseNotification";
-import { UseFetchStatus } from "../hook/UseFetchStatus";
+import { useForm } from "react-hook-form"
+import { UseUser } from '../hook/UseUser'
 import { UseWorld } from "../hook/UseWorld";
-import { UseUser } from "../hook/UseUser";
-import Loading from "../component/particle/molecule/Loading";
-import Logo from "../component/particle/Logo";
-import Button from '../component/particle/molecule/Button';
-import CountryApi from "../api/CountryApi";
+import { UseFetchStatus } from "../hook/UseFetchStatus";
+import { UseNotification } from "../hook/UseNotification";
+import Logo from "../component/particle/Logo"
+import Loading from '../component/particle/molecule/Loading'
+import Button from '../component/particle/molecule/Button'
+import UserApi from "../api/UserApi";
+import { useNavigate } from "react-router";
 
 const UserEditPanel = () => {
-  const { id } = useParams();
-  const { notify } = UseNotification();
-  const navigate = useNavigate();
 
-  const {
-    runFetch,
-    getStatus,
-    resetStatus
-  } = UseFetchStatus()
+  const { getStatus } = UseFetchStatus()
+  const { notify } = UseNotification()
+  const navigate = useNavigate()
+
+  const { logInUser, user } = UseUser()
 
   const {
     retryFetchCountries,
     countries
   } = UseWorld()
 
-  const { logInUser, user } = UseUser()
-
-  console.log(user)
-
   const {
     register,
     handleSubmit,
     reset,
-    setError,
     formState: { errors }
-  } = useForm();
-
-  useEffect(() => {
-
-    if (getStatus(`user-${id}`)?.didFetch ) return; //Avoids fetching if done before
-
-    runFetch(`user-${id}`, () => UserApi.readById(user._id))
-      .then(user => {
-        reset({
-          username: user.username,
-          email: user.email,
-          location: user.location
-        });
-      })
-      .catch(() => {
-        notify({
-          id: "loadUser",
-          notificationTag: "Error loading user data",
-          duration: 5000,
-          withProgress: false
-        });
-      });
-  }, [id]);
-
-  useEffect(() => {
-    resetStatus(`user-${id}`)
-  }, [])
+  } = useForm({
+    defaultValues: {
+      username: user.username || '',
+      email: user.email || '',
+      location: user.location || '',
+      password: user.password || '',
+    }
+  });
 
   const onSubmit = async (data) => {
+
+    const newUser = {
+      username: data.username,
+      email: data.email,
+      location: data.location,
+      password: data.password
+    };
+
     try {
-      const updated = await UserApi.update(id, data);
+      const sucess = await UserApi.update(user._id, newUser);
 
       notify({
-        id: "updateUser",
-        notificationTag: `User '${updated.username}' updated successfully`,
-        duration: 5000,
+        id: 'register',
+        notificationTag: `Success! '${data.username}' is your new Username`,
+        duration: 8000,
         withProgress: false
       });
 
-      logInUser(updated)
+      logInUser(user)
 
-      navigate('/'); //To DashBoard
+      notify({
+        id: 'login',
+        notificationTag: `'${data.username}' has logged in`,
+        withProgress: false
+      });
+      navigate('/') //To DashBoard
+      reset();
     } catch (error) {
       notify({
-        id: "updateUser",
-        notificationTag: `Update error: ${error.message}`,
-        duration: 5000,
-        withProgress: false
+        id: 'register',
+        notificationTag: `Registration error: ${error}`,
+        withProgress: false,
+        duration: 5000
       });
     }
   };
@@ -92,7 +78,7 @@ const UserEditPanel = () => {
   useEffect(() => {
     if (getStatus('countries')?.dataLoaded) return;
 
-    if (countries > 0) {
+    if (countries.length) {
       notify({
         id: 'countries',
         notificationTag: 'Found countries in cache',
@@ -103,9 +89,10 @@ const UserEditPanel = () => {
         id: 'countries',
         notificationTag: 'Fetching countries'
       })
-      runFetch('countries', CountryApi.list);
+      retryFetchCountries()
     }
-  }, [id])
+  }, [getStatus])
+
 
   return (
     <div className="w-screen flex justify-center">
@@ -114,7 +101,7 @@ const UserEditPanel = () => {
         <Logo />
       </div>
 
-      {getStatus('countries')?.dataLoaded && getStatus(`user-${id}`)?.dataLoaded ?
+      {countries ?
         <form className='flex flex-col items-center justify-center gap-2'
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -124,7 +111,7 @@ const UserEditPanel = () => {
               text-sm select-none
               ${!errors.username ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
               `}
-          > {!errors.username ? 'Username' : `${errors.username.message}`} </label>
+          > {!errors.username ? 'Username' : `${errors.username?.message}`} </label>
 
           <input
             id='username'
@@ -145,7 +132,7 @@ const UserEditPanel = () => {
               text-sm select-none
               ${!errors.email ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
               `}
-          > {!errors.email ? 'Email' : `${errors.email.message}`} </label>
+          > {!errors.email ? 'Email' : `${errors.email?.message}`} </label>
           <input
             id='email'
             className='
@@ -159,13 +146,37 @@ const UserEditPanel = () => {
             placeholder='pauldummy84@mail.com' />
 
           <label
+            htmlFor='password'
+            className={`
+            text-sm select-none
+            ${!errors.password ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
+          `}
+          >
+            {!errors.password ? 'Password' : `${errors.password?.message}`}
+          </label>
+
+          <input
+            id='password'
+            type='password'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+            {...register('password', {
+              required: 'Password is required',
+              minLength: { value: 6, message: 'Password must be at least 6 characters' },
+              maxLength: { value: 32, message: 'Password cannot exceed 32 characters' }
+            })}
+            placeholder={"yourPassword123"}
+          />
+
+
+          <label
             htmlFor='location'
             className={`
               text-sm select-none
               ${!errors.location ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}
               `}
-          > {!errors.location ? 'Location' : `${errors.location.message}`} </label>
+          > {!errors.location ? 'Location' : `${errors.location?.message}`} </label>
           <select
+            id='location'
             className='
              p-1 w-70 rounded
             dark:bg-slate-950 dark:border-slate-800
@@ -173,11 +184,12 @@ const UserEditPanel = () => {
             {...register('location', {
               required: 'Country selection is required'
             })}
+            defaultValue={user.location}
           >
             <option value="" disabled>
               Country Selection
             </option>
-            {countries.map(c => (
+            {Array.isArray(countries) && countries.map(c => (
               <option key={c.code} value={c.code}>
                 {c.name}
               </option>
@@ -190,7 +202,7 @@ const UserEditPanel = () => {
                 dark:hover:bg-red-500/80 dark:bg-red-700/80
                 hover:bg-red-600 bg-red-700 text-slate-100`}
               buttonText={<i className="bi bi-arrow-counterclockwise" />}
-              buttonName={'Restore data'}
+              buttonName={'Clear form'}
               ratio={'flex px-2 items-center gap-1'}
               action={() => reset()}
             />
@@ -200,7 +212,7 @@ const UserEditPanel = () => {
                 dark:hover:bg-emerald-500/80 dark:bg-emerald-700/80
                 hover:bg-emerald-600 bg-emerald-700 text-slate-100`}
               buttonText={<i className="bi bi-box-arrow-in-up" />}
-              buttonName={'Update data'}
+              buttonName={'Create User'}
               ratio={'flex px-2 items-center gap-1'}
               type={'submit'}
             />
@@ -212,6 +224,6 @@ const UserEditPanel = () => {
 
     </div>
   )
-};
+}
 
 export default UserEditPanel;
