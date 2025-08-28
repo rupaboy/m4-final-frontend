@@ -1,0 +1,17 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Manufacturing+Consent&display=swap');
+
+/* Bootstrap Icons */
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* TailWindCSS */
+@import 'tailwindcss';
+
+/* Define una variante personalizada para usar con Tailwind */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.font-manufacturing-consent-regular {
+  font-family: "Manufacturing Consent", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
