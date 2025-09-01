@@ -15,7 +15,6 @@ export const RadioProvider = ({ children }) => {
     })
     const [radioMarkers, setRadioMarkers] = useState([]);
 
-
 const fetchUserRadioMarkers = async (userId) => {
   try {
     const res = await RadioApi.byUser(userId);

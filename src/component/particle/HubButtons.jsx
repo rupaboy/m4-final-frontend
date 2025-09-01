@@ -1,12 +1,11 @@
-import { UseUser } from "../../hook/UseUser";
 import { UseWorld } from "../../hook/UseWorld";
 import { UseRadio } from "../../hook/UseRadio";
 import Button from "./molecule/Button";
+import { useEffect } from "react";
 
 const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
     
     const { setRadioPager, radioPager } = UseRadio();
-    const { isLoggedIn } = UseUser();
     const { currentCountry } = UseWorld();
 
     const goToPage = (page) => {
@@ -16,6 +15,10 @@ const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
             page
         }));
     };
+
+    useEffect(() => {
+        goToPage(1)
+    }, [currentCountry])
 
     return (
         <div className="flex gap-6 items-center justify-start w-full z-99">

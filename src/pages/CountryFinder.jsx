@@ -95,7 +95,7 @@ const CountryFinder = () => {
         </div>
       }
 
-      {isSearchModeSet && <div className="h-full md:ml-6 mt-10 md:mt-0 items-center justify-center
+      {isSearchModeSet && <div className="h-full md:ml-13 mt-10 md:mt-0 items-center justify-center
     flex flex-col md:flex-row">
 
         {
@@ -300,12 +300,12 @@ const CountryFinder = () => {
           })()}
         </div>
 
-        <aside className={`max-h-full
+        <aside className={`
       text-xs gap-0.5 grid items-center
-    my-auto font-black overflow-y-scroll`}>
+    my-auto font-black overflow-y-scroll pb-5`}>
           <div
             className={`md:pt-6 md:pb-6 mx-16 md:mx-0 md:mr-13
-            flex flex-wrap md:h-auto md:max-h-screen max-h-34 text-nowrap my-auto
+            flex flex-wrap md:h-auto md:max-h-screen max-h-64 text-nowrap
             overflow-y-scroll overflow-x-hidden items-center justify-center
           `}>
 

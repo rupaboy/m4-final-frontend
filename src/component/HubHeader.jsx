@@ -7,7 +7,7 @@ const HubHeader = () => {
 
     return (
         <div
-            className="fixed top-0 sm:left-0 border-b pt-15 sm:pt-0 w-screen sm:w-20 sm:h-full h-37
+            className="fixed top-0 sm:left-0 border-b pt-15 sm:pt-0 w-screen sm:w-20 sm:min-h-screen h-37
         dark:bg-slate-950 bg-slate-300 dark:text-slate-500 text-slate-700 z-99
         sm:border-r sm:border-b-0 border-b-amber-800 sm:border-amber-800 dark:border-b-amber-500 dark:sm:border-amber-500"
         >
