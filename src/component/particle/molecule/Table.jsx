@@ -9,10 +9,11 @@ const Table = ({
     footer2,
     footer3 = null,
     footer4 = null,
-    flag = null
+    flag = null,
+    ratio = ''
 }) => {
     return (
-        <div className='grid justify-center mx-2 items-start'>
+        <div className={`grid justify-center mx-2 items-start ${ratio}`}>
             <span className="leading-4">
                 {title}
             </span>

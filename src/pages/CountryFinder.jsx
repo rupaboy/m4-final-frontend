@@ -65,20 +65,14 @@ const CountryFinder = () => {
     }
   }, [isSearchModeSet])
 
-
   return (
 
-    <main className={`${isMenuOpen ? 'hidden' : ''}`}>
-
-      { !isSearchModeSet &&
-      <div className='top-7 w-screen flex items-center justify-center fixed'>
-        <Logo
-        isIsoOnly={true}
-        />
-      </div>}
+    <main className={`${isMenuOpen ? 'hidden' : 'overflow-y-scroll h-auto min-h-screen md:flex md:items-center'}`}>
 
       {isLoading &&
-        <Loading />
+        <div className="absolute top-1/3 left-1/2 translate-x-[-1rem]">
+          <Loading />
+        </div>
       }
 
       {countries.length === 0 && hasError && !isLoading &&
@@ -90,7 +84,7 @@ const CountryFinder = () => {
       }
 
       {!isSearchModeSet && countries.length !== 0 &&
-        <div className='w-screen flex flex-col items-center justify-center'>
+        <div className='mt-20 pb-15 w-screen flex flex-col items-center justify-center'>
           <h4 className="text-center text-xs mb-4">Name Search</h4>
           <SearchBar />
 
@@ -101,7 +95,7 @@ const CountryFinder = () => {
         </div>
       }
 
-      {isSearchModeSet && <div className="h-screen sm:ml-6 mt-10 md:mt-0 items-center justify-center
+      {isSearchModeSet && <div className="h-full md:ml-6 mt-10 md:mt-0 items-center justify-center
     flex flex-col md:flex-row">
 
         {
@@ -301,19 +295,17 @@ const CountryFinder = () => {
                   />
                 )
               }
-
             }
-
 
           })()}
         </div>
 
-        <aside className={`mb-10
+        <aside className={`max-h-full
       text-xs gap-0.5 grid items-center
-    h-screen my-auto font-black overflow-y-scroll`}>
+    my-auto font-black overflow-y-scroll`}>
           <div
-            className={`pt-6 pb-6
-            flex flex-wrap h-auto text-nowrap my-auto
+            className={`md:pt-6 md:pb-6 mx-16 md:mx-0 md:mr-13
+            flex flex-wrap md:h-auto md:max-h-screen max-h-34 text-nowrap my-auto
             overflow-y-scroll overflow-x-hidden items-center justify-center
           `}>
 
@@ -400,7 +392,7 @@ const CountryFinder = () => {
                   name={country.name}
                   flag={country.flag}
                   action={() => {
-                    navigate(`/countries/${country.code}`)
+                    navigate(`/country/${country.code}`)
                   }}
                   hover={() => {
                     countryHover(country.code)
@@ -429,7 +421,7 @@ const CountryFinder = () => {
                   name={country.name}
                   flag={country.flag}
                   action={() => {
-                    navigate(`/countries/${country.code}`)
+                    navigate(`/country/${country.code}`)
                   }}
                   hover={() => {
                     if (stages[0].name === 'Continent') {

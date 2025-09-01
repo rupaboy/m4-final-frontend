@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { UseUser } from "../hook/UseUser";
 
 const Unregistered = () => {
-  const { hasStoragedUser, storedUsers } = UseUser();
+  const { hasStoragedUser, storedUsers, setLogInEmail } = UseUser();
   const navigate = useNavigate();
 
   const usersArray = Array.isArray(storedUsers) ? storedUsers : [];
@@ -26,15 +26,15 @@ const Unregistered = () => {
         <div className="flex flex-col flex-wrap justify-center">
           {usersArray.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2">
-              {usersArray.map((user) => (
+              {usersArray.map((email) => (
                 <Button
-                  key={user.id}
+                  key={email}
                   ratio="flex items-center gap-2 px-2"
                   buttonText={<i className={"bi-box-arrow-in-right"} />}
-                  buttonName={`${user.email}`}
+                  buttonName={`${email}`}
                   title={"Login"}
                   action={() => {
-                    // setValue('email', user.email); // Solo si estás usando react-hook-form
+                    setLogInEmail(email)
                     navigate("/user/login");
                   }}
                 />

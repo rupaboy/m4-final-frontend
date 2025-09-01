@@ -1,6 +1,6 @@
-import { UseMarkers } from "../../../hook/UseMarkers"
 import { UseNotification } from "../../../hook/UseNotification"
 import { useNavigate } from "react-router"
+import { UseRadio } from "../../../hook/UseRadio"
 import MarkersList from "../../MarkersList"
 import Button from "./Button"
 
@@ -9,7 +9,7 @@ const NoCountries = ({ retryFetchCountries, isLoggedIn }) => {
 
     const navigate = useNavigate()
     const { notify } = UseNotification()
-    const { markers } = UseMarkers()
+    const { radioMarkers } = UseRadio()
 
     return (
         <main className="w-full flex flex-col items-center justify-center">
@@ -58,7 +58,7 @@ const NoCountries = ({ retryFetchCountries, isLoggedIn }) => {
                     }}
                 />
             </div>
-            { markers.length !== 0 && isLoggedIn &&
+            { radioMarkers.length !== 0 && isLoggedIn &&
             <aside className="text-center">
                 <h2 className="text-xs mt-7">You may still navigate:</h2>
                 <MarkersList/>

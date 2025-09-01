@@ -3,8 +3,16 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_SPHEREONE_ROOT_DOMAIN,
   headers: { "Content-Type": "application/json" },
-  // withCredentials: true, // activar si tu backend usa cookies/sesiones
 });
+
+//Dynamic Token
+export const setRadioToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
 
 const RadioApi = {
   create: (data) =>

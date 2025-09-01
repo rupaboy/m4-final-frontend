@@ -1,12 +1,10 @@
-import Marker from "./particle/molecule/Marker"
+import RadioItem from './particle/RadioItem'
 import Button from "./particle/molecule/Button"
-import { UseMarkers } from "../hook/UseMarkers"
-import { useNavigate } from "react-router"
+import { UseRadio } from "../hook/UseRadio"
 
 const MarkersList = () => {
 
-  const navigate = useNavigate()
-  const { markers, clearMarkers } = UseMarkers()
+  const {radioMarkers} = UseRadio()
 
   return (
     <aside className="flex flex-col w-screen overflow-y-scroll justify-center items-center">
@@ -22,27 +20,23 @@ const MarkersList = () => {
             max-h-[30vh] min-h-[30vh] overflow-hidden overflow-y-scroll">
 
         <ul className="flex flex-wrap h-min justify-center gap-1 mb-auto p-2 mx-auto">
-          {markers.map((marker) => (
-            <Marker
-              key={marker.code}
-              name={marker.name}
-              action={() => {
-                navigate(`/countries/${marker.code}`)
-              }}
-              flag={marker.flag}
+          {radioMarkers.map((marker) => (
+            <RadioItem
+              key={marker.station_uuid}
+              radio={marker}
             />
           ))}
         </ul>
       </div>
 
-      {markers.length > 1 &&
+      {radioMarkers.length > 1 &&
         <Button
           buttonText={<i className='bi-trash' />}
           title={`Removes all markers other than user's location`}
           ratio={'px-2 flex whitespace-nowrap items-center justify-center gap-1'}
           buttonName={'Clear Markers'}
           action={() => {
-            clearMarkers()
+            
           }}
         />
       }

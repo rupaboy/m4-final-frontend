@@ -35,7 +35,7 @@ const PopUpImage = ({ ratio = 'dark:bg-slate-950/96 bg-slate-200/90', image, ima
     <main
       className={`${ratio}
       pt-14 w-screen gap-2 h-screen flex flex-col
-      justify-center fixed inset-0 items-center`}
+      justify-center fixed inset-0 items-center z-200`}
       onClick={closePopUp} // click fuera cierra
     >
       <div

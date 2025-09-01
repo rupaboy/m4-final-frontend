@@ -6,6 +6,15 @@ const api = axios.create({
   // withCredentials: true, // activar si tu backend usa cookies/sesiones
 });
 
+//Dynamic Token
+export const setUserToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
 const UserApi = {
   api,
   signIn: (data) =>

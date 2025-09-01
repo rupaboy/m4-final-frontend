@@ -38,7 +38,7 @@ const PlanetEarth = ({
   }
 
   return (
-    <main>
+    <main className='flex-col flex pb-10'>
       <div className={`
         bg-radial from-indigo-950 to-slate-950/90
         border border-slate-950/25
@@ -50,18 +50,18 @@ const PlanetEarth = ({
           initial={{ x: -180 }}
           animate={{
             x: isLoopingStage()
-                ? -652 // Loop infinito
-                : (selectedContinent === continents[0]?.name)
-                  ? -240 // Africa
-                  : selectedContinent === continents[1]?.name
-                    ? -392 // Asia
-                    : selectedContinent === continents[2]?.name
-                      ? -250 // Europe
-                      : selectedContinent === continents[3]?.name
-                        ? -140 // North America
-                        : selectedContinent === continents[4]?.name
-                          ? -395 // Oceania
-                          : -130, // South America
+              ? -652 // Loop infinito
+              : (selectedContinent === continents[0]?.name)
+                ? -240 // Africa
+                : selectedContinent === continents[1]?.name
+                  ? -392 // Asia
+                  : selectedContinent === continents[2]?.name
+                    ? -250 // Europe
+                    : selectedContinent === continents[3]?.name
+                      ? -140 // North America
+                      : selectedContinent === continents[4]?.name
+                        ? -395 // Oceania
+                        : -130, // South America
           }}
           transition={{
             duration: isLoopingStage() ? 30 : 3,
@@ -101,23 +101,27 @@ const PlanetEarth = ({
 
       {
         uiStage !== 0
-        && <Button
-          ratio={'w-8 absolute md:translate-x-66'}
-          title={`Back to ${stages[uiStage -1]?.name} Selector`}
-          buttonText={<i className='bi-caret-left' />}
-          buttonName={`${stages[uiStage -1]?.name} Selector`}
-          action={() => previousStage()}
-        />
+        && <div className='flex justify-center'>
+          <Button //PREVIOUS STAGE BUTTON UNDER PLANET EARTH
+            ratio={'w-min px-1 items-center absolute flex gap-2'}
+            title={`Back to ${stages[uiStage - 1]?.name} Selector`}
+            buttonText={<i className='bi-caret-left' />}
+            buttonName={`${stages[uiStage - 1]?.name} Selector`}
+            action={() => previousStage()}
+          />
+        </div>
       }
       {
         uiStage === 0
-        && <Button
-          ratio={'w-8 absolute md:translate-x-66'}
-          title={`Toggle Search Mode`}
-          buttonText={<i className='bi-caret-left' />}
-          buttonName={`Search Mode`}
-          action={() => setIsSearchModeSet(false)}
-        />
+        && <div className='flex justify-center'>
+          <Button
+            ratio={'w-min px-1 items-center absolute flex gap-2'}
+            title={`Toggle Search Mode`}
+            buttonText={<i className='bi-caret-left' />}
+            buttonName={`Search Mode`}
+            action={() => setIsSearchModeSet(false)}
+          />
+        </div>
       }
     </main >
   );

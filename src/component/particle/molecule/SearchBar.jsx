@@ -36,7 +36,7 @@ const SearchBar = () => {
                     title={'Search Country Name'}
                     action={() => {
                         if (searchResults.length === 1){
-                            navigate(`/countries/${searchResults[0].code}`)
+                            navigate(`/country/${searchResults[0].code}`)
                         }
                     }}
                 />
@@ -54,7 +54,7 @@ const SearchBar = () => {
                     key={result.code}
                     name={result.name}
                     action={() => {
-                      navigate(`/countries/${result.code}`)
+                      navigate(`/country/${result.code}`)
                     }}
                     id={result.code}
                     flag={result.flag}

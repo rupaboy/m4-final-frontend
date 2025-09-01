@@ -20,7 +20,7 @@ export const UiProvider = ({ children }) => {
     };
 
     const isFinderOpen = location.pathname.startsWith('/finder')
-    const isHubOpen = location.pathname.startsWith('/countries')
+    const isHubOpen = location.pathname.startsWith('/country/')
     const isUserOpen = location.pathname.startsWith('/user')
     const isDashBoardOpen = location.pathname.endsWith('/')
 

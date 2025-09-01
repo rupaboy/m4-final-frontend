@@ -9,13 +9,13 @@ export const FetchStatusProvider = ({ children }) => {
     const capitalImageMap = useRef({}); // global cache for capital images
 
     const runFetch = useCallback(async (key, fetchFn, onSuccess) => {
-        if (capitalImageMap.current[key]) {
-            // Already cached, return immediately
+        if (key !== 'login' && capitalImageMap.current[key]) {
             if (onSuccess) onSuccess(capitalImageMap.current[key]);
             return capitalImageMap.current[key];
         }
 
-        if (didFetchMap.current[key]) return null; // already fetched
+        if (key !== 'login' && didFetchMap.current[key]) return null; 
+        //Only login key can repeat fetchs
 
         didFetchMap.current[key] = true;
         try {
@@ -24,8 +24,8 @@ export const FetchStatusProvider = ({ children }) => {
                 ...prev, [key]: { dataLoaded: true, fetchFailed: false }
             }));
 
-            if (data) {
-                capitalImageMap.current[key] = data; // store in global cache
+            if (key !== 'login' && data) { //Login key won't be in cache
+                capitalImageMap.current[key] = data;
             }
 
             if (onSuccess) onSuccess(data);
@@ -35,6 +35,7 @@ export const FetchStatusProvider = ({ children }) => {
             setStatusMap(prev => ({
                 ...prev, [key]: { dataLoaded: false, fetchFailed: true }
             }));
+
             return null;
         }
     }, []);

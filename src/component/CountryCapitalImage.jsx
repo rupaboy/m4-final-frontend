@@ -30,7 +30,7 @@ const CountryCapitalImage = ({ capital }) => {
 
     runFetch(
       capital,
-      () => getCapitalImage(capital), // fetch function
+      () => CountryApi.capitalImageByName(capital), // fetch function
       (url) => {                     // onSuccess
         if (url) setImgUrl(url);
         else {

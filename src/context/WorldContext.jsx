@@ -279,7 +279,7 @@ export const WorldProvider = ({ children }) => {
 
         if (result) {
             notify({
-                id: 'loading-countries', notificationTag: 'Countries Loaded'
+                id: 'loading-countries', notificationTag: 'Countries Loaded', withProgress: false
             })
             return { ok: true, data: result };
         } else {

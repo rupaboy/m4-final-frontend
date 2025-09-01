@@ -3,8 +3,16 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_SPHEREONE_ROOT_DOMAIN,
   headers: { "Content-Type": "application/json" },
-  // withCredentials: true, // activar si tu backend usa cookies/sesiones
 });
+
+// Setter de token para endpoints que lo requieran
+export const setCountryToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
 
 const CountryApi = {
   // Create/populate the countries collection
@@ -26,7 +34,7 @@ const CountryApi = {
   // Get capital image by name
   capitalImageByName: (capitalName) =>
     api.get(`/${import.meta.env.VITE_CAPITAL_IMAGE_NAME}/${encodeURIComponent(capitalName)}`)
-      .then(res => res.data.thumbnail?.source || null),
+      .then(res => res.data.imageUrl || null),
 
   // Get country by code
   byCode: (code) =>
