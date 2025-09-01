@@ -4,6 +4,8 @@ import {
   Route,
 } from 'react-router'
 
+import PageNotFound from '../pages/PageNotFound'
+
 // Country Entity
 import CountryFinder from '../pages/CountryFinder' // GET /finder
 // GET /finder/continents /finder/countries /finder/languages /finder/continents-languages
@@ -41,6 +43,10 @@ const RouterDom = () => {
 
         {/* Radio */}
         <Route path='/country/radio/:code' element={<CountryHub openRadio={true} />} />
+
+        {/* Catch-all 404 */}
+        <Route path='*' element={<PageNotFound />} />
+        
       </Route>
     </Routes>
   )

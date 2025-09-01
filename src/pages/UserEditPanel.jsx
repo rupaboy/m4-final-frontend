@@ -15,7 +15,7 @@ const UserEditPanel = () => {
   const { getStatus, runFetch, resetStatus } = UseFetchStatus();
   const { notify } = UseNotification();
   const navigate = useNavigate();
-  const { user, setUser } = UseUser();
+  const { user, setUser, isAdmin } = UseUser();
   const { retryFetchCountries, countries } = UseWorld();
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
@@ -23,7 +23,8 @@ const UserEditPanel = () => {
       username: user.username || '',
       email: user.email || '',
       location: user.location || '',
-      password: ''
+      password: '',
+      role: user.role.id || '',
     }
   });
 
@@ -71,9 +72,11 @@ const UserEditPanel = () => {
       <div className='top-7 fixed mx-auto'><Logo /></div>
 
       <form className='flex flex-col items-center justify-center gap-1' onSubmit={handleSubmit(onSubmit)}>
-    
-      <Header header={'Edit User'} subHeader={'Fields are optional'} />
+
+        <Header header={'Edit User'} subHeader={'Fields are optional'} />
         {/* Username */}
+        { user.username !== 'admin' &&
+          <>
         <label htmlFor='username' className={`text-sm select-none ${!errors.username ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
           {!errors.username ? 'Username' : `${errors.username?.message}`}
         </label>
@@ -81,6 +84,8 @@ const UserEditPanel = () => {
           {...register('username', { required: 'Username is required', minLength: { value: 5, message: '6 characters minimum' } })}
           placeholder="customusername"
         />
+      </>
+}
 
         {/* Email */}
         <label htmlFor='email' className={`text-sm select-none ${!errors.email ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
@@ -97,8 +102,26 @@ const UserEditPanel = () => {
         </label>
         <input id='password' type='password' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
           {...register('password', { minLength: { value: 6, message: 'Password must be at least 6 characters' }, maxLength: { value: 32, message: 'Password cannot exceed 32 characters' } })}
-          placeholder={"yourCurrentPassword"}
+          placeholder={"currentPassword"}
         />
+
+        {/* Role */}
+        {isAdmin &&
+          <>
+            <label htmlFor='role' className={`text-sm select-none ${!errors.role ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
+              {!errors.role ? 'Role' : `${errors.role?.message}`}
+            </label>
+            <select id='role' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+              {...register('role')}
+            >
+              <option value="" disabled>User Role</option>
+              { user.username !== 'admin' &&
+                <option value="">Basic User</option>
+                }
+              <option value="">Administrator</option>
+            </select>
+          </>
+        }
 
         {/* Location */}
         <label htmlFor='location' className={`text-sm select-none ${!errors.location ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>

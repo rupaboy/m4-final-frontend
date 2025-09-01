@@ -85,13 +85,13 @@ const CountryHub = ({ openRadio }) => {
   return (
     <main className={`
       ${isMenuOpen ? "hidden" : ""}
-      text-center min-h-screen w-screen overflow-y-scroll flex pt-15 sm:pt-0 gap-4
+      text-center min-h-screen w-full overflow-y-scroll flex pt-15 sm:pt-0 gap-4 items-start justify-center
     `}>
         <HubHeader />
-        <header className='fixed top-20 z-100 w-full pl-4 sm:pl-27 pr-4'>
+        <header className='fixed top-20 sm:left-27 left-4 w-full z-100'>
           <HubButtons setIsRadioOpen={setIsRadioOpen} isRadioOpen={isRadioOpen} />
         </header>
-      <div className="flex flex-col flex-1 items-center mt-38 sm:ml-20 justify-start">
+      <div className="flex flex-col flex-1 items-center sm:ml-24 mt-38 justify-center">
 
         {!isRadioOpen ? (
 

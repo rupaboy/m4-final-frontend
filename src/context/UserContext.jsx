@@ -23,6 +23,8 @@ export const UserProvider = ({ children }) => {
   const [logInEmail, setLogInEmail] = useState(null);
   const [user, setUser] = useState(null);
 
+  const isAdmin = user?.role.name === 'admin'
+
   // LOGIN
 const logInUser = async (userData) => {
   try {
@@ -104,7 +106,8 @@ const removeStoredUser = (userEmail) => {
       addStoredUser,
       removeStoredUser,
       user,
-      setUser
+      setUser,
+      isAdmin
     }}>
       {children}
     </UserContext.Provider>

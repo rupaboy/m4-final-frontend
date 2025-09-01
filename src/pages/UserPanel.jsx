@@ -74,12 +74,14 @@ const UserPanel = () => {
               buttonColor="dark:hover:bg-red-500/80 dark:bg-red-700/80 hover:bg-red-600 bg-red-700 text-slate-100"
               buttonText={<i className="bi bi-trash" />}
               buttonName='Delete User'
+              title='Delete User'
               ratio='flex px-2 items-center gap-1'
               action={handleDelete}
             />
             <Button
               buttonText={<i className="bi bi-box-arrow-in-left" />}
               buttonName='Logout'
+              title='Logout'
               ratio='flex px-2 items-center gap-1'
               action={handleLogout}
             />
@@ -87,6 +89,7 @@ const UserPanel = () => {
               buttonColor="dark:hover:bg-emerald-500/80 dark:bg-emerald-700/80 hover:bg-emerald-600 bg-emerald-700 text-slate-100"
               buttonText={<i className="bi bi-box-arrow-in-up" />}
               buttonName='Edit Account'
+              title='Edit Account'
               ratio='flex px-2 items-center gap-1'
               action={() => navigate(`/user/edit/${user._id}`)}
             />
