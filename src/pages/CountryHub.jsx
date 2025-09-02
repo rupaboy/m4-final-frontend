@@ -63,7 +63,9 @@ const CountryHub = ({ openRadio }) => {
       notify({ id: 'loading-radio', notificationTag: `${code}'s radio`, duration: 2000 });
       const res = await RadioApi.browseByCountryPage(code, radioPager.page);
       const pager = res.data;
-      setCurrentRadios(res.data.results);
+      const rawStations = res.data.results || []
+      const validStations = (rawStations).filter(s => s.url_resolved && s.url_resolved.trim() !== "");
+      setCurrentRadios(validStations);
       setRadioPager({
         page: pager.page,
         previousPage: pager.previousPage,

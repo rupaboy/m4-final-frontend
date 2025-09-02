@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL: import.meta.env.VITE_SPHEREONE_ROOT_DOMAIN,
   headers: { "Content-Type": "application/json" },
-  // withCredentials: true, // activar si tu backend usa cookies/sesiones
+  // withCredentials: true
 });
 
 //Dynamic Token

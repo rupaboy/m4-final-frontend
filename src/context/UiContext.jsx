@@ -6,6 +6,8 @@ const UiContext = createContext(); //Contexto de Temas
 export const UiProvider = ({ children }) => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [showMarkers, setShowMarkers] = useState(true)
+    const [showAdminTools, setShowAdminTools] = useState(false)
     const [showPopUp, setShowPopUp] = useState(false)
     const [position, setPosition] = useState({ x: 50, y: 50 });
     const [zoom, setZoom] = useState(false);
@@ -37,7 +39,11 @@ export const UiProvider = ({ children }) => {
             isFinderOpen,
             isDashBoardOpen,
             isHubOpen,
-            isUserOpen
+            isUserOpen,
+            showMarkers,
+            setShowMarkers,
+            showAdminTools,
+            setShowAdminTools
         }}>
             {children}
         </UiContext.Provider>

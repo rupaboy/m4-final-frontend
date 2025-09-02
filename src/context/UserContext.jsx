@@ -22,10 +22,11 @@ export const UserProvider = ({ children }) => {
   const [hasStoragedUser, setHasStoragedUser] = useState(false);
   const [logInEmail, setLogInEmail] = useState(null);
   const [user, setUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const isAdmin = user?.role.name === 'admin'
 
-  // LOGIN
+// LOGIN
 const logInUser = async (userData) => {
   try {
     const res = await UserApi.signIn(userData);
@@ -33,17 +34,20 @@ const logInUser = async (userData) => {
     const decoded = jwtDecode(token);
 
     const loggedUser = { ...userFromApi, token, id: decoded.id };
+
+    // Guardar user y token
     setUser(loggedUser);
     UserApi.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    setRadioToken(token); // All requests include token
+    setRadioToken(token);
     setCountryToken(token);
-    setUserToken(token)
-
+    setUserToken(token);
     setIsLoggedIn(true);
-    return true;
-  } catch {
-    return false;
+
+    // Retornar el objeto completo
+    return { user: loggedUser, token };
+  } catch (err) {
+    console.error('Login error:', err);
+    return null;
   }
 };
 
@@ -89,6 +93,16 @@ const removeStoredUser = (userEmail) => {
   });
 };
 
+const findUser = async (userId) => {
+  try {
+    const user = await UserApi.readById(userId)
+    return user
+  } catch (error) {
+      console.error(`User id:${userId} not found:`, error);
+      throw error;
+  }
+}
+
   useEffect(() => {
     setHasStoragedUser(storedUsers.length > 0);
   }, [storedUsers]);
@@ -98,6 +112,7 @@ const removeStoredUser = (userEmail) => {
       isLoggedIn,
       logInUser,
       logOutUser,
+      findUser,
       deleteUser,
       hasStoragedUser,
       logInEmail,
@@ -107,7 +122,9 @@ const removeStoredUser = (userEmail) => {
       removeStoredUser,
       user,
       setUser,
-      isAdmin
+      isAdmin,
+      selectedUser,
+      setSelectedUser
     }}>
       {children}
     </UserContext.Provider>

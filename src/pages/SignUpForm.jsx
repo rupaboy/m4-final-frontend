@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { UseUser } from '../hook/UseUser';
 import { UseWorld } from "../hook/UseWorld";
 import { UseFetchStatus } from "../hook/UseFetchStatus";
@@ -9,30 +10,18 @@ import Loading from '../component/particle/molecule/Loading';
 import Header from "../component/particle/Header";
 import Button from '../component/particle/molecule/Button';
 import UserApi from "../api/UserApi";
-import { useNavigate } from "react-router";
 
 const SignUpForm = () => {
   const { getStatus, runFetch, resetStatus } = UseFetchStatus();
   const { retryFetchCountries, countries } = UseWorld();
   const { notify } = UseNotification();
-  const { logInUser } = UseUser()
+  const { logInUser } = UseUser();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
-    defaultValues: {
-      username: '',
-      email: '',
-      location: '',
-      password: ''
-    }
-  });
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: { username: '', email: '', location: '', password: '' }
+});
 
-  // Force country selection
-  useEffect(() => {
-    if (countries.length > 0) setValue('location', '');
-  }, [countries, setValue]);
-
-  // Fetch countries if not loaded
   useEffect(() => {
     if (getStatus('countries')?.dataLoaded) return;
     if (countries.length) {
@@ -41,79 +30,95 @@ const SignUpForm = () => {
       notify({ id: 'countries', notificationTag: 'Fetching countries' });
       retryFetchCountries();
     }
-  }, [getStatus]);
+  }, [countries]);
 
-  const onSubmit = async (data) => {
-    resetStatus('createUser');
+  const onSubmit = async (formData) => {
+    resetStatus('register');
+    await runFetch("register", async () => {
+      try {
+        const userData = {...formData, role: 'user'}
+        const res = await UserApi.signUp(userData);
+        return res.data;
+      } catch (error) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "Unknown error while signing in";
 
-    await runFetch('createUser', async () => {
-      const userData = {
-        ...data,
-        role: 'user', // valor fijo que no se muestra
-      };
-
-      const createdUser = await UserApi.signUp(userData);
-      if (!createdUser) throw new Error('Creation failed');
-
-      logInUser(userData)
-      return createdUser;
-    }, () => {
-      notify({ id: 'createUser', notificationTag: 'User created successfully!', duration: 8000, withProgress: false });
-      navigate('/');
-      reset();
+        notify({
+          id: "register-error",
+          notificationTag: `${error.response?.data?.message}`,
+          message,
+          withProgress: false
+        });
+        throw error;
+      }
+    }, (data) => {
+      logInUser({ email:formData.email, password:formData.password})
+      navigate('/')
+      notify({
+        id: "register-success",
+        notificationTag: "Welcome",
+        message: `Hello ${data.user.username}`,
+        withProgress: false
+      });
     });
   };
 
-  const { isLoading } = getStatus('createUser');
-
+  const { isLoading } = getStatus('register');
   if (countries.length === 0) return <Loading size={32} />;
 
   return (
     <div className="w-screen flex justify-center gap-1">
-      <div className='top-7 fixed mx-auto'>
-        <Logo />
-      </div>
+      <div className='top-7 fixed mx-auto'><Logo /></div>
       <main className="flex flex-col">
-        <Header
-          header={`${isLoading ? 'Registering...' : 'Sign Up'}`}
-          subHeader={`${isLoading ? 'Please wait' : 'Register a new account'}`}
-        />
-        <form
-          autoComplete="off"
-          className='flex flex-col items-center justify-center gap-2' onSubmit={handleSubmit(onSubmit)}
-        >
+        <Header header={`${isLoading ? 'Registering...' : 'Sign Up'}`} subHeader={`${isLoading ? 'Please wait' : 'Register a new account'}`} />
+        <form autoComplete="off" className='flex flex-col items-center gap-2' onSubmit={handleSubmit(onSubmit)}>
+
           {/* Username */}
           <label htmlFor='username' className={`text-sm select-none ${!errors.username ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
-            {!errors.username ? 'Username' : `${errors.username?.message}`}
+            {!errors.username ? 'Username' : errors.username?.message}
           </label>
-          <input autoComplete="new-password" id='username' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
-            {...register('username', { required: 'Username is required', minLength: { value: 6, message: '6 characters minimum' } })}
+          <input
+            autoComplete="new-password"
+            id='username'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
             placeholder="customusername"
+            {...register('username', { required: 'Username is required', minLength: { value: 6, message: '6 characters minimum' } })}
           />
 
           {/* Email */}
           <label htmlFor='email' className={`text-sm select-none ${!errors.email ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
-            {!errors.email ? 'Email' : `${errors.email?.message}`}
+            {!errors.email ? 'Email' : errors.email?.message}
           </label>
-          <input autoComplete="new-password" id='email' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+          <input
+            autoComplete="new-password"
+            id='email'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+            placeholder='you@example.com'
             {...register('email', { required: 'Email is required', pattern: { value: /^[^@ ]+@[^@ ]+\.[^@ ]+$/, message: 'Invalid Email' } })}
-            placeholder='pauldummy84@mail.com'
           />
 
           {/* Password */}
           <label htmlFor='password' className={`text-sm select-none ${!errors.password ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
-            {!errors.password ? 'Password' : `${errors.password?.message}`}
+            {!errors.password ? 'Password' : errors.password?.message}
           </label>
-          <input autoComplete="new-password" id='password' type='password' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
-            {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' }, maxLength: { value: 32, message: 'Password cannot exceed 32 characters' } })}
+          <input
+            autoComplete="new-password"
+            id='password'
+            type='password'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
             placeholder="Enter a password"
+            {...register('password', { required: 'Password is required', minLength: { value: 6, message: '6 characters minimum' }, maxLength: { value: 32, message: 'Max 32 chars' } })}
           />
 
           {/* Location */}
           <label htmlFor='location' className={`text-sm select-none ${!errors.location ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
-            {!errors.location ? 'Location' : `${errors.location?.message}`}
+            {!errors.location ? 'Location' : errors.location?.message}
           </label>
-          <select id='location' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
+          <select
+            id='location'
+            className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
             {...register('location', { required: 'Country selection is required' })}
           >
             <option value="" disabled>Country Selection</option>
@@ -136,7 +141,7 @@ const SignUpForm = () => {
               buttonName={'Create User'}
               title={'Submit new user'}
               ratio={'flex px-2 items-center gap-1'}
-              type={'submit'}
+              type='submit'
               disabled={isLoading}
             />
           </div>
