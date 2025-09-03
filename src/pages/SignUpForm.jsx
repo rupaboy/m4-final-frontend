@@ -9,13 +9,12 @@ import Logo from "../component/particle/Logo";
 import Loading from '../component/particle/molecule/Loading';
 import Header from "../component/particle/Header";
 import Button from '../component/particle/molecule/Button';
-import UserApi from "../api/UserApi";
 
 const SignUpForm = () => {
   const { getStatus, runFetch, resetStatus } = UseFetchStatus();
   const { retryFetchCountries, countries } = UseWorld();
+  const { signUpUser } = UseUser()
   const { notify } = UseNotification();
-  const { logInUser } = UseUser();
   const navigate = useNavigate();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -32,38 +31,26 @@ const SignUpForm = () => {
     }
   }, [countries]);
 
-  const onSubmit = async (formData) => {
-    resetStatus('register');
-    await runFetch("register", async () => {
-      try {
-        const userData = {...formData, role: 'user'}
-        const res = await UserApi.signUp(userData);
-        return res.data;
-      } catch (error) {
-        const message =
-          error.response?.data?.message ||
-          error.message ||
-          "Unknown error while signing in";
-
-        notify({
-          id: "register-error",
-          notificationTag: `${error.response?.data?.message}`,
-          message,
-          withProgress: false
-        });
-        throw error;
-      }
-    }, (data) => {
-      logInUser({ email:formData.email, password:formData.password})
-      navigate('/')
+const onSubmit = async (formData) => {
+  resetStatus('register');
+  await runFetch(
+    "register",
+    async () => {
+      const userData = { ...formData, role: 'user' };
+      return await signUpUser(userData); //UserContext
+    },
+    (user) => {
       notify({
         id: "register-success",
-        notificationTag: "Welcome",
-        message: `Hello ${data.user.username}`,
+        notificationTag: `Success! Welcome, ${user.username}`,
+        message: `Hello, ${user.username}`,
+        duration: 5000,
         withProgress: false
       });
-    });
-  };
+      navigate('/');
+    }
+  );
+};
 
   const { isLoading } = getStatus('register');
   if (countries.length === 0) return <Loading size={32} />;

@@ -53,6 +53,15 @@ const UserEditPanel = () => {
       if (!updatedUser) throw new Error('Update failed');
 
       setUser(prev => ({ ...prev, ...newUser }));
+
+      // --- sync storedUsers ---
+      const oldEmail = user.email;
+      const newEmail = newUser.email;
+      const storedUsers = JSON.parse(localStorage.getItem("sphereOne-users")) || [];
+      const updatedUsers = storedUsers.map(e => e === oldEmail ? newEmail : e);
+      if (!updatedUsers.includes(newEmail)) updatedUsers.push(newEmail);
+      localStorage.setItem("sphereOne-users", JSON.stringify(updatedUsers));
+
       return updatedUser; // returned data is passed to onSuccess
     }, () => {
       notify({ id: 'updateUser', notificationTag: 'Success editing user!', duration: 8000, withProgress: false });
@@ -74,7 +83,7 @@ const UserEditPanel = () => {
 
         <Header header={'Edit User'} subHeader={'Fields are optional'} />
         {/* Username */}
-        {user.username !== 'admin' &&
+        {user.username !== 'admin' ?
           <>
             <label htmlFor='username' className={`text-sm select-none ${!errors.username ? 'text-amber-950 dark:text-amber-500' : 'dark:text-red-400 text-red-700'}`}>
               {!errors.username ? 'Username' : `${errors.username?.message}`}
@@ -83,7 +92,7 @@ const UserEditPanel = () => {
               {...register('username', { required: 'Username is required', minLength: { value: 5, message: '6 characters minimum' } })}
               placeholder="customusername"
             />
-          </>
+          </> : <p className={`text-sm select-none text-slate-700 dark:text-slate-500 mb-4 italic`}>admin's username cannot be changed</p>
         }
 
         {/* Email */}

@@ -28,18 +28,6 @@ const MarkersList = () => {
           ))}
         </ul>
       </div>
-
-      {radioMarkers.length > 1 &&
-        <Button
-          buttonText={<i className='bi-trash' />}
-          title={`Removes all markers other than user's location`}
-          ratio={'px-2 flex whitespace-nowrap items-center justify-center gap-1'}
-          buttonName={'Clear Markers'}
-          action={() => {
-            
-          }}
-        />
-      }
     </aside>
   )
 }

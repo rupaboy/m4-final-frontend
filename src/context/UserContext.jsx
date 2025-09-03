@@ -23,6 +23,7 @@ export const UserProvider = ({ children }) => {
   const [logInEmail, setLogInEmail] = useState(null);
   const [user, setUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [currentUserList, setCurrentUserList] = useState([])
 
   const isAdmin = user?.role.name === 'admin'
 
@@ -58,15 +59,31 @@ const logInUser = async (userData) => {
     delete UserApi.api.defaults.headers.common['Authorization'];
   };
 
+  // SIGNUP + optional login
+const signUpUser = async (userData, autoLogin = true) => {
+  try {
+    const res = await UserApi.signUp(userData);
+    const createdUser = res.data.user;
+
+    // Optional by prop
+    if (autoLogin) {
+      await logInUser({ email: userData.email, password: userData.password });
+    }
+
+    return createdUser;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+};
+
   // DELETE USER
   const deleteUser = async (userId) => {
     try {
-      await UserApi.delete(userId);
-      setStoredUsers(prev => {
-        const updated = prev.filter(u => u.id !== userId);
-        localStorage.setItem('sphereOne-users', JSON.stringify(updated));
-        return updated;
-      });
+      const res = await findUser(userId)
+      if (!res.data) return
+      await UserApi.delete(userId)
+      removeStoredUser(res.data.email)
       if (user?.id === userId) logOutUser();
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -112,6 +129,7 @@ const findUser = async (userId) => {
       isLoggedIn,
       logInUser,
       logOutUser,
+      signUpUser,
       findUser,
       deleteUser,
       hasStoragedUser,
@@ -124,7 +142,9 @@ const findUser = async (userId) => {
       setUser,
       isAdmin,
       selectedUser,
-      setSelectedUser
+      setSelectedUser,
+      currentUserList,
+      setCurrentUserList
     }}>
       {children}
     </UserContext.Provider>

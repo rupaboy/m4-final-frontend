@@ -19,6 +19,7 @@ import CollectionUsers from '../pages/CollectionUsers'
 import CollectionUsersCreate from '../pages/CollectionUsersCreate'
 import CollectionUsersUserData from '../pages/CollectionUsersUserData'
 import CollectionUsersEdit from '../pages/CollectionUsersEdit'
+import CollectionUsersList from '../pages/CollectionUsersList'
 // Radio Entity
 import CollectionRadioMarkers from '../pages/CollectionRadioMarkers'
 
@@ -53,6 +54,7 @@ const RouterDom = () => {
         <Route path='/collection/users/create' element={<CollectionUsersCreate />} />
         <Route path='/collection/users/id/:id' element={<CollectionUsersUserData />} />
         <Route path='/collection/users/edit/id/:id' element={<CollectionUsersEdit />} />
+        <Route path='/collection/users/list' element={<CollectionUsersList />} />
 
         {/* Catch-all 404 */}
         <Route path='*' element={<PageNotFound />} />

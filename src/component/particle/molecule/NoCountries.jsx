@@ -12,7 +12,7 @@ const NoCountries = ({ retryFetchCountries, isLoggedIn }) => {
     const { radioMarkers } = UseRadio()
 
     return (
-        <main className="w-full flex flex-col items-center justify-center">
+        <main className="mt-20 w-full flex flex-col items-center justify-center">
 
             <h2 className="my-2 border-b border-b-amber-800 dark:border-b-amber-400">
                 No Internet or API down

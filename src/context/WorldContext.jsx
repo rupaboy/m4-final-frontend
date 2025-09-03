@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect } from "react";
+import { createContext, useState, useMemo, useEffect, useCallback } from "react";
 import { useLocation } from "react-router";
 import { UseNotification } from "../hook/UseNotification.jsx";
 import { UseFetchStatus } from "../hook/UseFetchStatus.jsx";
@@ -33,7 +33,6 @@ export const WorldProvider = ({ children }) => {
     const [uiStage, setUiStage] = useState(0); //Current stage
 
     const [stages, setStages] = useState([ //Default Finder Stages
-
         {
             id: 0,
             name: 'Continent',
@@ -45,6 +44,30 @@ export const WorldProvider = ({ children }) => {
             description: 'Select Country'
         },
     ]);
+
+    const idealCountriesLength = 244
+
+    //fills collection
+    const populateCountriesCollection = useCallback(async () => {
+        try {
+            const res = await CountryApi.createCollection();
+            return res.data.message;
+        } catch (error) {
+            console.error("Error populating countries:", error);
+            throw error;
+        }
+    }, []);
+
+    //drops collection
+    const purgeCountriesCollection = useCallback(async () => {
+        try {
+            const res = await CountryApi.purgeCollection();
+            return res.data.message;
+        } catch (error) {
+            console.error("Error purging countries:", error);
+            throw error;
+        }
+    }, []);
 
     const countryFinder = () => { //100%
         setStages([
@@ -251,19 +274,19 @@ export const WorldProvider = ({ children }) => {
         });
 
         if (location.pathname.startsWith('/finder'))
-        notify({
-            id: 'cached-flags',
-            notificationTag: 'Pre-loading flags of the world.',
-            withProgress: false,
-            duration: 5000
-        });
+            notify({
+                id: 'cached-flags',
+                notificationTag: 'Pre-loading flags of the world.',
+                withProgress: false,
+                duration: 5000
+            });
     }, [countries]);
 
     useEffect(() => {
         if (isFinderOpen && !dataLoaded) {
             runFetch('countries', CountryApi.list, (result) => {
-            setCountries(result.data);
-        });
+                setCountries(result.data);
+            });
             notify({
                 id: 'loading-countries',
                 notificationTag: 'Loading countries...'
@@ -433,6 +456,10 @@ export const WorldProvider = ({ children }) => {
                 searchCountries,
                 searchResults,
                 countries,
+                setCountries,
+                idealCountriesLength,
+                populateCountriesCollection,
+                purgeCountriesCollection,
                 stages,
                 isFinderOpen,
                 uiStage,

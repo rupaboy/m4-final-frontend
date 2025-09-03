@@ -87,7 +87,7 @@ const UserPanel = () => {
             />
             <Button
               buttonColor="dark:hover:bg-emerald-500/80 dark:bg-emerald-700/80 hover:bg-emerald-600 bg-emerald-700 text-slate-100"
-              buttonText={<i className="bi bi-box-arrow-in-up" />}
+              buttonText={<i className="bi bi-pen" />}
               buttonName='Edit Account'
               title='Edit Account'
               ratio='flex px-2 items-center gap-1'

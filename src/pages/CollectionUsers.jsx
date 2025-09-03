@@ -21,22 +21,10 @@ const CollectionUsers = () => {
         />
         <Button
           buttonText={<i className="bi-people" />}
-          title={`${'Read Users'}`}
-          buttonName={`${'Read Users'}`}
+          title={`${'List Users'}`}
+          buttonName={`${'List Users'}`}
           action={() => navigate('/collection/users/list')}
         />
-        {/*<Button
-          buttonText={<i className="bi-boombox" />}
-          title={`${'Radio Markers'}`}
-          buttonName={`${'Radio Markers'}`}
-          action={() => navigate('/collection/radios')}
-        />
-        <Button
-          buttonText={<i className="bi-globe" />}
-          title={`${'Countries'}`}
-          buttonName={`${'Countries'}`}
-          action={() => navigate('/collection/countries')}
-        />*/}
       </main>
 
     </main>

@@ -20,12 +20,12 @@ const Collections = () => {
                     buttonName={`${'Users'}`}
                     action={() => navigate('/collection/users')}
                 />
-                <Button
+                {/*<Button
                     buttonText={<i className="bi-people" />}
                     title={`${'Radio Markers'}`}
                     buttonName={`${'Radio Markers'}`}
                     action={() => navigate('/collection/radios')}
-                />
+                />*/}
                 <Button
                     buttonText={<i className="bi-globe" />}
                     title={`${'Countries'}`}

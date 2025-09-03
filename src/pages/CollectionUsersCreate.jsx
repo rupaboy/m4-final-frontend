@@ -77,7 +77,7 @@ const CollectionUsersCreate = () => {
                         {!errors.username ? 'Username' : `${errors.username?.message}`}
                     </label>
                     <input autoComplete="new-password" id='username' className='p-1 w-70 rounded dark:bg-slate-950 dark:border-slate-800 bg-slate-300 border border-slate-400'
-                        {...register('username', { required: 'Username is required', minLength: { value: 6, message: '6 characters minimum' } })}
+                        {...register('username', { required: 'Username is required', minLength: { value: 5, message: '5 characters minimum' } })}
                         placeholder="customusername"
                     />
 

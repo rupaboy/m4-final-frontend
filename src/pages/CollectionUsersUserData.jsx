@@ -1,35 +1,33 @@
 import { useNavigate, useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UseNotification } from "../hook/UseNotification";
 import { UseFetchStatus } from "../hook/UseFetchStatus";
 import { UseUser } from "../hook/UseUser";
 import UserApi from "../api/UserApi";
-import Header from '../component/particle/Header';
+import Header from "../component/particle/Header";
 import Logo from "../component/particle/Logo";
-import Button from '../component/particle/molecule/Button';
+import Button from "../component/particle/molecule/Button";
 
 const CollectionUsersUserData = () => {
   const navigate = useNavigate();
   const { notify } = UseNotification();
-  const { runFetch, getStatus } = UseFetchStatus();
+  const { runFetch } = UseFetchStatus();
+  const { removeStoredUser } = UseUser();
   const { id } = useParams();
 
-  const { selectedUser, setSelectedUser, removeStoredUser } = UseUser();
-
-  if (!id) return null;
+  const [user, setUser] = useState(null);
 
   const handleDelete = async () => {
-    if (confirm(`Delete user account: '${selectedUser.username}'?`)) {
+    if (confirm(`Delete user account: '${user.username}'?`)) {
       await runFetch(
         "delete-user",
         async () => {
-          const deletedUser = await UserApi.delete(selectedUser._id);
+          const deletedUser = await UserApi.delete(user._id);
           if (!deletedUser) throw new Error("Deletion failed");
-          removeStoredUser(selectedUser.email);
+          removeStoredUser(user.email);
           return deletedUser;
         },
         () => {
-          setSelectedUser(null)
           notify({
             id: "delete-user",
             notificationTag: "Success deleting user!",
@@ -47,37 +45,27 @@ const CollectionUsersUserData = () => {
     if (!id) return;
 
     const fetchUserId = async () => {
-      if (getStatus(`user-id-${id}`)?.dataLoaded) {
-        notify({
-          id: "loading-user",
-          notificationTag: `User ${id}: from cache`,
-          duration: 2000,
-          withProgress: false,
-        });
-      } else {
-        notify({
-          id: "loading-user",
-          notificationTag: `User ${id}: single fetch`,
-          duration: 3000,
-        });
-        await runFetch(
-          `user-id-${id}`,
-          () => UserApi.readById(id),
-          (res) => setSelectedUser(res.data)
-        );
-      }
-    };
-    fetchUserId();
-  }, [id]);
+      notify({
+        id: "loading-user",
+        notificationTag: `User ${id}: fetching`,
+        duration: 3000,
+      });
 
-  if (!selectedUser) return <p>Loading user...</p>;
+      const response = await runFetch(`user-id-${id}`, () => UserApi.readById(id));
+      if (response?.data) setUser(response.data);
+    };
+
+    fetchUserId();
+  }, []);
+
+  if (!user) return <p>Loading user...</p>;
 
   return (
     <div className="w-full flex flex-col items-start gap-1">
       <header className="top-7 left-1/2 translate-x-[-2rem] sm:translate-x-[-3.4rem] fixed flex justify-center z-200">
         <Logo action={() => navigate("/")} />
       </header>
-      <Header header={`User Account`} subHeader={`ID: ${id}`} />
+      <Header header="User Account" subHeader={`ID: ${id}`} />
 
       <main className="w-screen flex justify-center">
         <div className="flex flex-col gap-2">
@@ -98,10 +86,10 @@ const CollectionUsersUserData = () => {
             </aside>
 
             <aside className="flex flex-col gap-2">
-              <p className="text-left text-nowrap">{selectedUser.username}</p>
-              <p className="text-left text-nowrap">{selectedUser.email}</p>
-              <p className="text-left text-nowrap">{selectedUser.location}</p>
-              <p className="text-left text-nowrap">{selectedUser.role?.description}</p>
+              <p className="text-left text-nowrap">{user.username}</p>
+              <p className="text-left text-nowrap">{user.email}</p>
+              <p className="text-left text-nowrap">{user.location}</p>
+              <p className="text-left text-nowrap">{user.role?.description}</p>
             </aside>
           </div>
 
