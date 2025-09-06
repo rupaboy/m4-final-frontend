@@ -6,7 +6,7 @@ import Button from "./molecule/Button";
 import { useNavigate } from "react-router";
 
 export default function RadioPlayer() {
-  const { currentRadio, setIsRadioDisplayed, isRadioDisplayed, isRadioMarked, removeRadioMarker } = UseRadio();
+  const { currentRadio, setIsRadioDisplayed, isRadioDisplayed, isRadioMarked, removeRadioMarker, addRadioMarker } = UseRadio();
   const { isLoggedIn } = UseUser()
   const navigate = useNavigate();
   const containerRef = useRef(null);
