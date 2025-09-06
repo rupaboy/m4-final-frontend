@@ -76,23 +76,25 @@ export default function RadioPlayer() {
             title="Go to country"
           />
           {isLoggedIn &&
-                    <Button
-                        buttonText={
-                            isRadioMarked(currentRadio)
-                                ? <i className="bi bi-star-fill text-amber-500" />
-                                : <i className="bi bi-star" />
-                        }
-                        title={isRadioMarked(currentRadio) ? "Unmark as favourite" : "Mark as favourite"}
-                        buttonName={`${isRadioMarked(currentRadio) ? 'Clear' : 'Mark'}`}
-                        ratio="w-15 justify-start px-1 flex items-center gap-1"
-                        action={() => {
-                            if (isRadioMarked(currentRadio)) {
-                                const confirmed = window.confirm("Are you sure you want to remove this favourite?");
-                                if (!confirmed) return;
-                            }
-                            removeRadioMarker(currentRadio._id);
-                        }}
-                    />
+            <Button
+              buttonText={
+                isRadioMarked(currentRadio)
+                  ? <i className="bi bi-star-fill text-amber-500" />
+                  : <i className="bi bi-star" />
+              }
+              title={isRadioMarked(currentRadio) ? "Unmark as favourite" : "Mark as favourite"}
+              buttonName={`${isRadioMarked(currentRadio) ? 'Clear' : 'Mark'}`}
+              ratio="w-15 justify-start px-1 flex items-center gap-1"
+              action={() => {
+                if (isRadioMarked(currentRadio)) {
+                  const confirmed = window.confirm("Are you sure you want to remove this favourite?");
+                  if (!confirmed) return;
+                  removeRadioMarker(currentRadio._id);
+                } else {
+                  addRadioMarker(currentRadio);
+                }
+              }}
+            />
           }
         </footer>
       </main>
