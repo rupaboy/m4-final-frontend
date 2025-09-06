@@ -6,7 +6,7 @@ import Button from "./molecule/Button";
 import { useNavigate } from "react-router";
 
 export default function RadioPlayer() {
-  const { currentRadio, setIsRadioDisplayed, isRadioDisplayed, isRadioMarked, toggleRadioMarker } = UseRadio();
+  const { currentRadio, setIsRadioDisplayed, isRadioDisplayed, isRadioMarked, removeRadioMarker } = UseRadio();
   const { isLoggedIn } = UseUser()
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -90,7 +90,7 @@ export default function RadioPlayer() {
                                 const confirmed = window.confirm("Are you sure you want to remove this favourite?");
                                 if (!confirmed) return;
                             }
-                            toggleRadioMarker(currentRadio);
+                            removeRadioMarker(currentRadio._id);
                         }}
                     />
           }
