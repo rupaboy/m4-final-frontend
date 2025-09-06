@@ -65,7 +65,6 @@ const toggleRadioMarker = async (radio) => {
   }
 };
 
-
     return (
         <RadioContext.Provider value={{
             currentRadio,

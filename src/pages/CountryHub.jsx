@@ -64,7 +64,10 @@ const CountryHub = ({ openRadio }) => {
       const res = await RadioApi.browseByCountryPage(code, radioPager.page);
       const pager = res.data;
       const rawStations = res.data.results || []
-      const validStations = (rawStations).filter(s => s.url_resolved && s.url_resolved.trim() !== "");
+      const validStations = (rawStations).filter(
+        s => s.name.toLowerCase() === "abdulbasit abdulsamad".toLowerCase()
+        && s.url_resolved?.trim()
+      );
       setCurrentRadios(validStations);
       setRadioPager({
         page: pager.page,
