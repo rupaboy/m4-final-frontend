@@ -3,9 +3,9 @@ import { UseRadio } from "../hook/UseRadio";
 import RadioItem from "./particle/RadioItem";
 
 const RadioMarkerList = () => {
-    const [openCountry, setOpenCountry] = useState(null);
-    const { radioMarkers } = UseRadio();
-    const containerRef = useRef(null);
+  const [openCountry, setOpenCountry] = useState(null);
+  const { radioMarkers } = UseRadio();
+  const containerRef = useRef(null);
 
   // cerrar al hacer click afuera
   useEffect(() => {
@@ -28,35 +28,39 @@ const RadioMarkerList = () => {
   return (
     <div ref={containerRef} className="flex flex-col max-w-[60vw] gap-1 w-full">
       {groupedByCountry &&
-        Object.entries(groupedByCountry).map(([countryCode, radios]) => {
-          const isOpen = openCountry === countryCode;
-          return (
-            <div
-              key={countryCode}
-              className="rounded-md dark:bg-slate-800 max-h-90  overflow-y-scroll"
-            >
-              <button
-                onClick={() =>
-                  setOpenCountry(isOpen ? null : countryCode)
-                }
-                className={`
+        Object.entries(groupedByCountry)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([countryCode, radios]) => {
+            const isOpen = openCountry === countryCode;
+            return (
+              <div
+                key={countryCode}
+                className="rounded-md dark:bg-slate-800 max-h-90  overflow-y-scroll"
+              >
+                <button
+                  onClick={() =>
+                    setOpenCountry(isOpen ? null : countryCode)
+                  }
+                  className={`
                    bg-slate-300 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700
                   w-full text-center font-bold py-1 sticky top-0 z-10
                   `}
-              >
-                {countryCode}
-              </button>
+                >
+                  {countryCode}
+                </button>
 
-              {isOpen && (
-                <div className="flex flex-wrap justify-evenly p-1 gap-1 dark:bg-slate-950/30 bg-slate-400/30">
-                  {radios.map((radio) => (
-                    <RadioItem key={radio._id} radio={radio} />
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {isOpen && (
+                  <div className="flex flex-wrap justify-evenly p-1 gap-1 dark:bg-slate-950/30 bg-slate-400/30">
+                    {radios
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((radio) => (
+                        <RadioItem key={radio._id} radio={radio} />
+                      ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
     </div>
   );
 };
