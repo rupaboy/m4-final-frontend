@@ -1,19 +1,12 @@
 import { UseWorld } from "../../hook/UseWorld";
 import { UseRadio } from "../../hook/UseRadio";
 import Button from "./molecule/Button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
 
-    const [query, setQuery] = useState('');
     const { setRadioPager, radioPager } = UseRadio();
     const { currentCountry } = UseWorld();
-
-    const handleChange = (e) => {
-        const newQuery = e.target.value;
-        setQuery(newQuery);
-        searchCountries(newQuery);
-    }
 
     const goToPage = (page) => {
         if (!page) return;
@@ -30,13 +23,6 @@ const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
             previousPage: null
         })
     }, [currentCountry])
-
-
-    useEffect(() => {
-        setQuery('')
-        searchCountries([])
-    }, [])
-
 
     return (
         <div className="flex gap-6 items-center w-full z-99">
@@ -59,19 +45,6 @@ const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
                         title={`Fetch Data of ${currentCountry.name}`}
                         action={() => setIsRadioOpen(false)}
                     />
-
-                    <main className="flex flex-col w-screen overflow-y-scroll justify-center items-center">
-                        <div className="flex gap-2 mb-4">
-                            <input
-                                type="text"
-                                value={query}
-                                placeholder="Some Country Name"
-                                onChange={handleChange}
-                                className="border p-2 mt-1 text-center rounded w-60 dark:bg-slate-950 bg-slate-200"
-                            />
-                        </div>
-                    </main>
-
 
                     <div className="flex gap-4 w-full justify-end pr-8 sm:pr-31">
                         {radioPager.previousPage && (

@@ -30,6 +30,9 @@ const RadioApi = {
   browseByCountryPage: (code, page) =>
     api.get(`/${import.meta.env.VITE_RADIO_BROWSE}/${code}/${page}`),
 
+  searchByRadioName: (code, name, page) =>
+    api.get(`/${import.meta.env.VITE_RADIO_BROWSE}/${code}/${name}/${page}`),
+
   byId: (id) =>
     api.get(`/${import.meta.env.VITE_RADIO_ID}/${id}`),
 
