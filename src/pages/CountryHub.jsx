@@ -72,7 +72,7 @@ useEffect(() => {
   };
 
   fetchData();
-}, [code, countries, runFetch, getStatus, setCurrentCountry, notify, isRadioOpen]);
+}, [code, countries, runFetch, getStatus, setCurrentCountry, notify, isRadioOpen, radioPager.page]);
 
   if (!currentCountry) {
     return (

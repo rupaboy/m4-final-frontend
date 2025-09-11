@@ -53,11 +53,9 @@ export const RadioProvider = ({ children }) => {
   };
 
   const filterRadiosByName = async (code, name) => {
-    const { stations, pager } = await searchRadiosByName(code, name);
-
-    setCurrentRadios(stations);
-    setRadioPager(pager);
+    const { stations } = await searchRadiosByName(code, name);
     setAreRadiosFiltered(true);
+    setCurrentRadios(stations);
   };
 
   const fetchUserRadioMarkers = async (userId) => {
