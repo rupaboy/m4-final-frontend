@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
 
-    const { setRadioPager, radioPager } = UseRadio();
+    const { setRadioPager, radioPager, areRadiosFiltered } = UseRadio();
     const { currentCountry } = UseWorld();
 
     const goToPage = (page) => {
@@ -36,7 +36,7 @@ const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
                 />
             )}
 
-            {isRadioOpen && (
+            {isRadioOpen && !areRadiosFiltered && (
                 <div className="flex justify-between items-center w-full">
                     <Button
                         buttonText={<i className="bi bi-list" />}

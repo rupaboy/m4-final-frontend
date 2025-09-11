@@ -1,34 +1,63 @@
 import { createContext, useState } from "react";
 import RadioApi from '../api/RadioApi'
+import { code } from "framer-motion/client";
 
 const RadioContext = createContext(); //Contexto de Temas
 
 export const RadioProvider = ({ children }) => {
 
+  const [radioMarkers, setRadioMarkers] = useState([]);
   const [currentRadios, setCurrentRadios] = useState([])
   const [currentRadio, setCurrentRadio] = useState(null)
   const [isRadioDisplayed, setIsRadioDisplayed] = useState(false)
+  const [areRadiosFiltered, setAreRadiosFiltered] = useState(false)
   const [radioPager, setRadioPager] = useState({
     nextPage: null,
     page: 1,
     previousPage: null
   })
-  const [radioMarkers, setRadioMarkers] = useState([]);
 
-  const searchRadiosByName = async (code, name) => {
-    const res = await RadioApi.searchByRadioName(code, name, radioPager.page);
+  const fetchRadiosByCountry = async (code, page = 1) => {
+    const res = await RadioApi.browseByCountryPage(code, page);
     const pager = res.data;
-    const rawStations = res.data.results || []
-    const validStations = (rawStations).filter(
+    const rawStations = res.data.results || [];
+    const validStations = rawStations.filter(
       s => s.name.toLowerCase() !== "abdulbasit abdulsamad".toLowerCase()
         && s.url_resolved?.trim()
     );
+
     setCurrentRadios(validStations);
     setRadioPager({
       page: pager.page,
       previousPage: pager.previousPage,
       nextPage: pager.nextPage
     });
+    setAreRadiosFiltered(false);
+  };
+
+
+  const searchRadiosByName = async (code, name) => {
+    const res = await RadioApi.searchByRadioName(code, name, radioPager.page);
+    const pager = res.data;
+
+    const rawStations = res.data.results || [];
+    const validStations = rawStations.filter(s => s.url_resolved?.trim());
+    return {
+      stations: validStations,
+      pager: {
+        page: pager.page,
+        previousPage: pager.previousPage,
+        nextPage: pager.nextPage
+      }
+    };
+  };
+
+  const filterRadiosByName = async (code, name) => {
+    const { stations, pager } = await searchRadiosByName(code, name);
+
+    setCurrentRadios(stations);
+    setRadioPager(pager);
+    setAreRadiosFiltered(true);
   };
 
   const fetchUserRadioMarkers = async (userId) => {
@@ -87,7 +116,10 @@ export const RadioProvider = ({ children }) => {
       setCurrentRadio,
       currentRadios,
       setCurrentRadios,
-      searchRadiosByName,
+      fetchRadiosByCountry,
+      filterRadiosByName,
+      areRadiosFiltered,
+      setAreRadiosFiltered,
       isRadioDisplayed,
       setIsRadioDisplayed,
       radioPager,
