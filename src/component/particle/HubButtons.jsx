@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
 
-    const { setRadioPager, radioPager } = UseRadio();
+    const { setRadioPager, radioPager, areRadiosFiltered } = UseRadio();
     const { currentCountry } = UseWorld();
 
     const goToPage = (page) => {
@@ -46,27 +46,28 @@ const HubButtons = ({ setIsRadioOpen, isRadioOpen }) => {
                         action={() => setIsRadioOpen(false)}
                     />
 
-                    <div className="flex gap-4 w-full justify-end pr-8 sm:pr-31">
-                        {radioPager.previousPage && (
-                            <Button
-                                buttonText={<i className="bi bi-arrow-left" />}
-                                buttonName={`#${radioPager.previousPage}`}
-                                ratio="text-center px-2 text-xs w-8 mb-10"
-                                title="Previous page"
-                                action={() => goToPage(radioPager.previousPage)}
-                            />
-                        )}
+                    {!areRadiosFiltered &&
+                        <div className="flex gap-4 w-full justify-end pr-8 sm:pr-31">
+                            {radioPager.previousPage && (
+                                <Button
+                                    buttonText={<i className="bi bi-arrow-left" />}
+                                    buttonName={`#${radioPager.previousPage}`}
+                                    ratio="text-center px-2 text-xs w-8 mb-10"
+                                    title="Previous page"
+                                    action={() => goToPage(radioPager.previousPage)}
+                                />
+                            )}
 
-                        {radioPager.nextPage && (
-                            <Button
-                                buttonText={<i className="bi bi-arrow-right" />}
-                                buttonName={`#${radioPager.nextPage}`}
-                                ratio="text-center px-2 text-xs w-8 mb-10"
-                                title="Next page"
-                                action={() => goToPage(radioPager.nextPage)}
-                            />
-                        )}
-                    </div>
+                            {radioPager.nextPage && (
+                                <Button
+                                    buttonText={<i className="bi bi-arrow-right" />}
+                                    buttonName={`#${radioPager.nextPage}`}
+                                    ratio="text-center px-2 text-xs w-8 mb-10"
+                                    title="Next page"
+                                    action={() => goToPage(radioPager.nextPage)}
+                                />
+                            )}
+                        </div>}
                 </div>
             )}
         </div>
